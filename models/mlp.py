@@ -1,6 +1,7 @@
+from collections import OrderedDict
+from sympy import Order
 import torch
-from torch import dropout, nn
-import torchvision
+from torch import nn
 
 
 class BaseModel(nn.Module):
@@ -12,10 +13,10 @@ class BaseModel(nn.Module):
 
 # TODO : dimensions are not clear
 class MLP4(BaseModel):
-    def __init__(self,numInputsm, numOutputs):
+    def __init__(self,numInputs, numOutputs):
         super().__init__()
         self.fc1 = nn.Sequential(
-            nn.Linear(784,500),
+            nn.Linear(numInputs,500),
             nn.ReLU(),
             nn.Dropout(0.25)
         )
@@ -44,4 +45,29 @@ class MLP4(BaseModel):
     
     
 class MLPCustom(BaseModel):
-    pass
+    def __init__(self,numLinearLayers:int = 4,dimensions:list = [], dropouts:list = [], activations:list = []  ):
+        super().__init__()
+        assert len(dropouts) == len(activations) == len(dimensions)
+        self.Odict = OrderedDict()
+        for i in range(numLinearLayers):
+            
+            if i!=0 and dimensions[i][0]!=dimensions[i-1][1]:
+                raise "Dimensions are not compatible!"
+            self.Odict['linear'+str(i)] = nn.Linear(dimensions[i][0],dimensions[i][1])
+            if activations[i] == 'Leakyrelu':
+                active = nn.LeakyReLU()
+            elif activations[i] == 'relu':
+                active = nn.ReLU()
+            elif activations[i] == 'tanh':
+                active = nn.Tanh()
+            else:
+                active = nn.Sigmoid()
+            self.Odict['activation'+str(i)] = active
+            if dropouts[i] is not None:
+                drop = nn.Dropout(dropouts[i])
+                self.Odict['Dropout'+str(i)] = drop
+        self.main = nn.Sequential(
+            self.Odict
+        )
+    def forward(self,x):
+        return self.main(x)
