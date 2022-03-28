@@ -14,7 +14,6 @@ class FashionMNISTdataHandler:
                 transformer: A preprocessor for the dataset before feeding to the DataLoader
         '''
         self.path = path
-        # self.tran
         download = True
         self.trainLoader= None
         self.testLoader = None
@@ -32,13 +31,13 @@ class FashionMNISTdataHandler:
         self.test_set = datasets.FashionMNIST(root =self.path, train = False ,
                                                             download = download , transform = self.transformer)
     
-    def __call__(self, batchSize:int = 32, shuffle: bool = True, NumWorkers: int= 2 ):
+    def __call__(self, batchSize:int = 32, shuffle: bool = True, NumWorkers: int= 1 ):
         '''
             @params:
                 batchsize: the number of inputs for each batch to contain
                 shuffle: whether to shuffle or not
                 NumWorkers: How many Threads to split the process into
         '''
-        self.trainLoader = DataLoader(self.train_set , batch_size = batchSize, shuffle = shuffle, num_workers = NumWorkers)
-        self.testLoader = DataLoader(self.test_set , batch_size = batchSize, shuffle = shuffle, num_workers = NumWorkers) 
+        self.trainLoader = DataLoader(self.train_set , batch_size = batchSize, shuffle = shuffle)#, num_workers = NumWorkers)
+        self.testLoader = DataLoader(self.test_set , batch_size = batchSize, shuffle = shuffle)#, num_workers = NumWorkers) 
         return self.trainLoader,self.testLoader

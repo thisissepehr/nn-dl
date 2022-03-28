@@ -15,6 +15,7 @@ class BaseModel(nn.Module):
 class MLP4(BaseModel):
     def __init__(self,numInputs, numOutputs):
         super().__init__()
+        self.numInputs = numInputs
         self.fc1 = nn.Sequential(
             nn.Linear(numInputs,500),
             nn.ReLU(),
@@ -32,10 +33,9 @@ class MLP4(BaseModel):
         )
         self.fc4 = nn.Sequential(
             nn.Linear(250,numOutputs),
-            nn.ReLU(),
-            nn.Dropout(0.25)
         )
     def forward(self, x):
+        x = x.view(-1, self.numInputs)
         x = self.fc1(x)
         x = self.fc2(x)
         x = self.fc3(x)
@@ -47,7 +47,8 @@ class MLP4(BaseModel):
 class MLPCustom(BaseModel):
     def __init__(self,numLinearLayers:int = 4,dimensions:list = [], dropouts:list = [], activations:list = []  ):
         super().__init__()
-        assert len(dropouts) == len(activations) == len(dimensions)
+        assert len(dropouts) == len(activations) == len(dimensions) == numLinearLayers
+        self.numInputs = dimensions[0][0]
         self.Odict = OrderedDict()
         for i in range(numLinearLayers):
             
@@ -62,12 +63,14 @@ class MLPCustom(BaseModel):
                 active = nn.Tanh()
             else:
                 active = nn.Sigmoid()
-            self.Odict['activation'+str(i)] = active
-            if dropouts[i] is not None:
-                drop = nn.Dropout(dropouts[i])
-                self.Odict['Dropout'+str(i)] = drop
+            if i!=numLinearLayers-1:    
+                self.Odict['activation'+str(i)] = active
+                if dropouts[i] is not None:
+                    drop = nn.Dropout(dropouts[i])
+                    self.Odict['Dropout'+str(i)] = drop
         self.main = nn.Sequential(
             self.Odict
         )
     def forward(self,x):
+        x = x.view(-1, self.numInputs)
         return self.main(x)

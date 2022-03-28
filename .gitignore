@@ -1,3 +1,4 @@
 FashionMNIST/
 models/__pycache__
 loader/__pycache__
+utils/__pycache__
