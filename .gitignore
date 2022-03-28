@@ -1,1 +1,3 @@
 FashionMNIST/
+models/__pycache__
+loader/__pycache__
