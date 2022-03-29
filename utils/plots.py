@@ -17,12 +17,12 @@ def plotLoss(loss:list = [], label:str = "Loss", ax = None,show:bool = True):
     return ax
     
 def plotAcc(TrainAcc:list = [],TestAcc:list = [], ax = None,show:bool = True):
-    x = np.arange(0,len(TrainAcc))
+    # x = np.arange(0,len(TrainAcc))
     assert len(TrainAcc) == len(TestAcc) !=0
     if ax == None:
         _, ax = plt.subplots()
-    ax.plot(x, TestAcc, color = 'r', label = 'Test accuracy')
-    ax.plot(x, TrainAcc, color = 'g', label = 'Train accuracy')
+    ax.plot(TestAcc, color = 'r', label = 'Test accuracy')
+    ax.plot(TrainAcc, color = 'g', label = 'Train accuracy')
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     ax.set_xlabel('epochs')
     ax.set_ylabel('accuracy')

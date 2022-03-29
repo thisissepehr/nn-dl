@@ -1,5 +1,4 @@
 from collections import OrderedDict
-from sympy import Order
 import torch
 from torch import nn
 
@@ -11,7 +10,6 @@ class BaseModel(nn.Module):
     def forward(self,x):
         pass
 
-# TODO : dimensions are not clear
 class MLP4(BaseModel):
     def __init__(self,numInputs, numOutputs):
         super().__init__()
@@ -45,7 +43,7 @@ class MLP4(BaseModel):
     
     
 class MLPCustom(BaseModel):
-    def __init__(self,numLinearLayers:int = 4,dimensions:list = [], dropouts:list = [], activations:list = []  ):
+    def __init__(self,numLinearLayers:int = 4,dimensions:list = [], dropouts:list = [], activations:list = []):
         super().__init__()
         assert len(dropouts) == len(activations) == len(dimensions) == numLinearLayers
         self.numInputs = dimensions[0][0]
