@@ -6,8 +6,11 @@ from utils.plots import plotAcc, plotLoss
 from utils.initializers import Normal, Xavier, KaimingHe, custom_init
 from torch import nn
 from torch.optim import Adam,SGD,Adagrad
-trainLoader, testLoader = FashionMNISTdataHandler("./FashionMNIST")(batchSize=32)
 from tqdm import tqdm
+
+
+
+trainLoader, testLoader = FashionMNISTdataHandler("./FashionMNIST")(batchSize=32)
 # //////////////////////////////////
 # //       network Defining       //
 # //////////////////////////////////
