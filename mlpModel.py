@@ -7,8 +7,7 @@ from utils.initializers import Normal, Xavier, KaimingHe, custom_init
 from torch import nn
 from torch.optim import Adam,SGD,Adagrad
 from tqdm import tqdm
-
-
+from utils.train import Train
 
 trainLoader, testLoader = FashionMNISTdataHandler("./FashionMNIST")(batchSize=32)
 # //////////////////////////////////
@@ -89,30 +88,35 @@ print(net)
 # //////////////////////////////////
 # //         training             //
 # //////////////////////////////////
+t = Train()(trainLoader=trainLoader,
+            testLoader=testLoader,
+            network=net,
+            lossFunction=loss,
+            optimizer=optimizer,
+            )
 
+# loss_epoch_array = []
+# max_epochs = 20
+# loss_epoch = 0
+# train_accuracy = []
+# test_accuracy = []
+# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# for epoch in range(max_epochs):
+#     loss_epoch = 0
+#     for i, data in tqdm(enumerate(trainLoader, 0), ascii=True):
+#         net.train()
+#         inputs, labels = data
+#         inputs, labels = inputs.to(device), labels.to(device)
+#         optimizer.zero_grad()
+#         outputs = net(inputs)
+#         losses = loss(outputs, labels)
+#         losses.backward()
+#         optimizer.step()
+#         loss_epoch += losses.item()
+#     loss_epoch_array.append(loss_epoch)
+#     train_accuracy.append(evaluate(net,trainLoader,device=device))
+#     test_accuracy.append(evaluate(net,testLoader, device=device))
+#     print("Epoch {}: loss: {}, train accuracy: {}, test accuracy:{}".format(epoch + 1, loss_epoch_array[-1], train_accuracy[-1], test_accuracy[-1]))
 
-loss_epoch_array = []
-max_epochs = 20
-loss_epoch = 0
-train_accuracy = []
-test_accuracy = []
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-for epoch in range(max_epochs):
-    loss_epoch = 0
-    for i, data in tqdm(enumerate(trainLoader, 0), ascii=True):
-        net.train()
-        inputs, labels = data
-        inputs, labels = inputs.to(device), labels.to(device)
-        optimizer.zero_grad()
-        outputs = net(inputs)
-        losses = loss(outputs, labels)
-        losses.backward()
-        optimizer.step()
-        loss_epoch += losses.item()
-    loss_epoch_array.append(loss_epoch)
-    train_accuracy.append(evaluate(net,trainLoader,device=device))
-    test_accuracy.append(evaluate(net,testLoader, device=device))
-    print("Epoch {}: loss: {}, train accuracy: {}, test accuracy:{}".format(epoch + 1, loss_epoch_array[-1], train_accuracy[-1], test_accuracy[-1]))
-
-plotAcc(train_accuracy,test_accuracy)
-plotLoss(loss_epoch_array)
+# plotAcc(train_accuracy,test_accuracy)
+# plotLoss(loss_epoch_array)
