@@ -1,12 +1,8 @@
-import torch
 from loader.dataloader import FashionMNISTdataHandler
 from models import mlp, convolutionalModels
-from utils.evaluate import evaluate
-from utils.plots import plotAcc, plotLoss
 from utils.initializers import Normal, Xavier, KaimingHe, custom_init
 from torch import nn
 from torch.optim import Adam,SGD,Adagrad
-from tqdm import tqdm
 from utils.train import Train
 
 trainLoader, testLoader = FashionMNISTdataHandler("./FashionMNIST")(batchSize=32)
