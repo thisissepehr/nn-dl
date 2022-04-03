@@ -42,4 +42,12 @@ class Train:
             plotAcc(self.train_accuracy,self.test_accuracy)
             plotLoss(self.loss_epoch_array)
                 
+    def getStats(self):
+        return self.train_accuracy,self.test_accuracy
+    
+    def setClear(self):
+        self.loss_epoch = 0
+        self.train_accuracy = []
+        self.test_accuracy = []
+        self.loss_epoch_array = []
         

@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from turtle import forward
 import torch
 from torch import nn, softmax
 from models.mlp import BaseModel
@@ -62,6 +63,7 @@ class CNN_C(BaseModel):
         super().__init__()
         self.conv_Sequence = nn.Sequential(
             nn.Conv2d(1,32,kernel_size=(3,3), padding=(1,0)),
+            nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2),
             
@@ -91,3 +93,11 @@ class CNN_C(BaseModel):
         
         return x
     
+    
+    
+class AlexNet(BaseModel):
+    
+    def __init__(self):
+        super().__init__()
+    def forward(self, x):
+        pass
