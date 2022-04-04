@@ -64,15 +64,29 @@ trainLoader, testLoader = FashionMNISTdataHandler("./FashionMNIST")(batchSize=32
 
 #////////////////// block five  ///////////////////
 # batchsize = 32
-net = convolutionalModels.CNN_C()
+# net = convolutionalModels.CNN_C()
+# lr = 0.015
+# wd=0.9
+# momentum = 0.9
+# optimizer = SGD(net.parameters(), lr = lr, momentum= momentum)
+# loss = nn.CrossEntropyLoss()
+# net.apply(custom_init)
+# print(net)
+# this reached 90.62 on test
+#//////////////////////////////////////////////////
+
+#////////////////// block six   ////////////////////
+batchsize = 32
+# convArch = ((1, 64), (1, 128), (2, 256), (2, 512), (2, 512))
+net = convolutionalModels.VGG11(in_channels=1, num_classes=10)
 lr = 0.015
 wd=0.9
 momentum = 0.9
-optimizer = SGD(net.parameters(), lr = lr, momentum= momentum)
+optimizer = Adam(net.parameters(), lr = lr)#, momentum= momentum)
 loss = nn.CrossEntropyLoss()
 net.apply(custom_init)
 print(net)
-# this reached 90.62 on test
+# this reached ? on test
 #//////////////////////////////////////////////////
 
 

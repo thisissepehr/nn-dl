@@ -94,53 +94,51 @@ class CNN_C(BaseModel):
         return x
     
     
-class VGGBlock(BaseModel):
-    def __init__(self, numConvs, inputChannels, outputChannels):
-        super().__init__()
-        self.numConvs = numConvs
-        for i in range(self.numConvs):
-            self.add_module('conv{0}'.format(i), nn.Conv2d(inputChannels,
-                                                           outputChannels,
-                                                           kernel_size=3,
-                                                           padding=1))
-            inputChannels = outputChannels
-            self.add_module('relu{0}'.format(i), nn.ReLU())
-
-        self.maxPool = nn.MaxPool2d(kernel_size=2, stride=2)
-
-        
-    def forward(self, x):
-        out = x
-        for i in range(self.numConvs):
-            out = self._modules['conv{0}'.format(i)](out)
-            out = self._modules['relu{0}'.format(i)](out)  
-        out = self.maxPool(out)
-        return out
 class VGG11(BaseModel):
-    
-    def __init__(self,convArch):
+    def __init__(self, in_channels, num_classes=10):
         super().__init__()
-        self.convArch = convArch
-        inChannels = 1
-        for i,(numConvs, outChannels) in enumerate(convArch):
-            self.add_module('vggBlock{0}'.format(i), VGGBlock(numConvs,
-                                                              inChannels,
-                                                              outChannels))
-            inChannels = outChannels
-        self.last = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(outChannels * 7 * 7, 4096),
+        self.in_channels = in_channels
+        self.num_classes = num_classes
+
+        # convolutional layers 
+        self.conv_layers = nn.Sequential(
+            nn.Conv2d(self.in_channels, 64, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(4096, 4096),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(4096,10)
-        ) 
-        
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(256, 512, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+
+        # fully connected linear layers
+        self.linear_layers = nn.Sequential(
+            nn.Linear(in_features=512*7*7, out_features=4096),
+            nn.ReLU(),
+            nn.Dropout2d(0.5),
+            nn.Linear(in_features=4096, out_features=4096),
+            nn.ReLU(),
+            nn.Dropout2d(0.5),
+            nn.Linear(in_features=4096, out_features=self.num_classes)
+        )
+
     def forward(self, x):
-        out = x
-        for i in range(len(self.convArch)):
-            out = self._modules['vggBlock{0}'.format(i)](out)
-        out = self.last(out)
-        return out
+        x = self.conv_layers(x)
+        # flatten to prepare for the fully connected layers
+        x = x.view(x.size(0), -1)
+        x = self.linear_layers(x)
+        return x
