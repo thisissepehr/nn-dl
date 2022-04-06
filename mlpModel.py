@@ -12,13 +12,13 @@ trainLoader, testLoader = FashionMNISTdataHandler("./FashionMNIST")(batchSize=32
 
 
 # /////////////// block one ////////
-net = mlp.MLP4(784,10, patching = True)
-loss = nn.CrossEntropyLoss()
-lr = 0.1
-weightDecay = 0
-optimizer = SGD(net.parameters(), lr =lr, weight_decay=weightDecay)
-net.apply(Normal)
-print(net)
+# net = mlp.MLP4(784,10, patching = True)
+# loss = nn.CrossEntropyLoss()
+# lr = 0.1
+# weightDecay = 0
+# optimizer = SGD(net.parameters(), lr =lr, weight_decay=weightDecay)
+# net.apply(Normal)
+# print(net)
 
 # reaches 88.44% as test accuracy without patching, with patching 86.92
 # //////////////////////////////////
@@ -26,16 +26,17 @@ print(net)
 
 
 #///////////// block two //////////////
-# net = mlp.MLPCustom(activations=["Leakyrelu","Leakyrelu","Leakyrelu","Leakyrelu","Leakyrelu"],
-#                     dimensions=[(784,900),(900,500),(500,450),(450,250),(250,10)],
-#                     numLinearLayers=5,
-#                     dropouts=[0.3,0.3,0.3,0.3,0.3])
-# loss = nn.CrossEntropyLoss()
-# lr = 0.1
-# weightDecay = 0
-# optimizer = SGD(net.parameters(), lr =lr, weight_decay=weightDecay)
-# net.apply(Normal)
-# print(net)
+net = mlp.MLPCustom(activations=["Leakyrelu","Leakyrelu","Leakyrelu","Leakyrelu","Leakyrelu"],
+                    dimensions=[(784,900),(900,500),(500,450),(450,250),(250,10)],
+                    numLinearLayers=5,
+                    dropouts=[0.3,0.3,0.3,0.3,0.3],
+                    patching=False)
+loss = nn.CrossEntropyLoss()
+lr = 0.1
+weightDecay = 0
+optimizer = SGD(net.parameters(), lr =lr, weight_decay=weightDecay)
+net.apply(Normal)
+print(net)
 # this model did 87.51 on test dataset
 #///////////////////////////////
 

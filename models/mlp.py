@@ -90,7 +90,13 @@ class MLP4(BaseModel):
         x = self.fc4(x)
         return x
     
+class MeanLayer(BaseModel):
+    def __init__(self,):
+        super().__init__()
     
+    def forward(self, x):
+        return x.mean(axis=1)
+ 
     
 class MLPCustom(BaseModel):
     def __init__(self,numLinearLayers:int = 4,dimensions:list = [], dropouts:list = [], activations:list = [], patching:bool = False):
@@ -106,6 +112,8 @@ class MLPCustom(BaseModel):
                 raise "Dimensions are not compatible!"
             if i==0 and self.doPatch:
                 self.Odict["Stem"+str(i)] = STEM(14)
+            if i==numLinearLayers-1 and self.doPatch:
+                self.Odict['Mean'] = MeanLayer()
             self.Odict['linear'+str(i)] = nn.Linear(dimensions[i][0],dimensions[i][1])
             if activations[i] == 'Leakyrelu':
                 active = nn.LeakyReLU()
@@ -124,5 +132,6 @@ class MLPCustom(BaseModel):
             self.Odict
         )
     def forward(self,x):
-        x = x.view(-1, self.numInputs)
+        if not self.doPatch:
+            x = x.view(-1, self.numInputs)
         return self.main(x)
