@@ -12,7 +12,7 @@ trainLoader, testLoader = FashionMNISTdataHandler("./FashionMNIST")(batchSize=32
 
 
 # /////////////// block one ////////
-net = mlp.MLP4(784,10)
+net = mlp.MLP4(784,10, patching = True)
 loss = nn.CrossEntropyLoss()
 lr = 0.1
 weightDecay = 0
@@ -20,7 +20,7 @@ optimizer = SGD(net.parameters(), lr =lr, weight_decay=weightDecay)
 net.apply(Normal)
 print(net)
 
-# reaches 88.44% as test accuracy
+# reaches 88.44% as test accuracy without patching, with patching 86.92
 # //////////////////////////////////
 
 

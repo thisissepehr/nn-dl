@@ -11,13 +11,13 @@ class BaseModel(nn.Module):
         pass
 
 class STEM(BaseModel):
-    def __init__(self, numPatches):
+    def __init__(self, numPixelsTopatch, img_height:int = 28, img_width:int = 28, batch_size:int = 32):
         super().__init__()
-        self.numPatches = numPatches
-    
+        self.numPixelsTopatch = numPixelsTopatch
+        self.finalLinear = nn.Linear((img_height*img_width)//((img_height//numPixelsTopatch) * (img_width//numPixelsTopatch)),784)
     def __patching(self,batch):
         final = []
-        batch = batch.unfold(2, self.numPatches, self.numPatches).unfold(3, self.numPatches, self.numPatches)
+        batch = batch.unfold(2, self.numPixelsTopatch, self.numPixelsTopatch).unfold(3, self.numPixelsTopatch, self.numPixelsTopatch)
         for img in batch:
           p = img.flatten()
           p = torch.split(p,196)
@@ -28,8 +28,11 @@ class STEM(BaseModel):
         
     def forward(self,x):
     
-        assert x.size()[2] * x.size()[3] // self.numPatches != 0
-        return self.__patching(x)
+        assert x.size()[2] * x.size()[3] // self.numPixelsTopatch != 0
+        x = self.__patching(x)
+        x = self.finalLinear(x)
+        # out = torch.transpose(x,1,2)
+        return x
         
         
 
@@ -50,9 +53,12 @@ class ClassifierCell(BaseModel):
         pass
 
 class MLP4(BaseModel):
-    def __init__(self,numInputs, numOutputs):
+    def __init__(self,numInputs, numOutputs, patching:bool = True):
         super().__init__()
         self.numInputs = numInputs
+        self.doPatch = patching
+        if self.doPatch:
+            self.StemPatching = STEM(14)
         self.fc1 = nn.Sequential(
             nn.Linear(numInputs,500),
             nn.ReLU(),
@@ -71,15 +77,16 @@ class MLP4(BaseModel):
         self.fc4 = nn.Sequential(
             nn.Linear(250,numOutputs),
         )
-        self.testing = STEM(14)
     def forward(self, x):
-        # x = x.view(-1, self.numInputs)
-        x = self.testing(x)
-        # TODO : size consistency here is a key :)
-        print(x.size())
+        if self.doPatch:
+            x = self.StemPatching(x)
+        else:
+            x = x.view(-1, self.numInputs)
         x = self.fc1(x)
         x = self.fc2(x)
         x = self.fc3(x)
+        if self.doPatch:
+            x = x.mean(axis=1)
         x = self.fc4(x)
         return x
     
