@@ -12,13 +12,13 @@ trainLoader, testLoader = FashionMNISTdataHandler("./FashionMNIST")(batchSize=32
 
 
 # /////////////// block one ////////
-# net = mlp.MLP4(784,10)
-# loss = nn.CrossEntropyLoss()
-# lr = 0.1
-# weightDecay = 0
-# optimizer = SGD(net.parameters(), lr =lr, weight_decay=weightDecay)
-# net.apply(Normal)
-# print(net)
+net = mlp.MLP4(784,10)
+loss = nn.CrossEntropyLoss()
+lr = 0.1
+weightDecay = 0
+optimizer = SGD(net.parameters(), lr =lr, weight_decay=weightDecay)
+net.apply(Normal)
+print(net)
 
 # reaches 88.44% as test accuracy
 # //////////////////////////////////
@@ -76,16 +76,16 @@ trainLoader, testLoader = FashionMNISTdataHandler("./FashionMNIST")(batchSize=32
 #//////////////////////////////////////////////////
 
 #////////////////// block six   ////////////////////
-batchsize = 32
+# batchsize = 32
 # convArch = ((1, 64), (1, 128), (2, 256), (2, 512), (2, 512))
-net = convolutionalModels.VGG11(in_channels=1, num_classes=10)
-lr = 0.015
-wd=0.9
-momentum = 0.9
-optimizer = Adam(net.parameters(), lr = lr)#, momentum= momentum)
-loss = nn.CrossEntropyLoss()
-net.apply(custom_init)
-print(net)
+# net = convolutionalModels.VGG11(in_channels=1, num_classes=10)
+# lr = 0.015
+# wd=0.9
+# momentum = 0.9
+# optimizer = Adam(net.parameters(), lr = lr)#, momentum= momentum)
+# loss = nn.CrossEntropyLoss()
+# net.apply(custom_init)
+# print(net)
 # this reached ? on test
 #//////////////////////////////////////////////////
 

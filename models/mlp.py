@@ -10,6 +10,45 @@ class BaseModel(nn.Module):
     def forward(self,x):
         pass
 
+class STEM(BaseModel):
+    def __init__(self, numPatches):
+        super().__init__()
+        self.numPatches = numPatches
+    
+    def __patching(self,batch):
+        final = []
+        batch = batch.unfold(2, self.numPatches, self.numPatches).unfold(3, self.numPatches, self.numPatches)
+        for img in batch:
+          p = img.flatten()
+          p = torch.split(p,196)
+          p = torch.stack(list(p), dim=0)
+          final.append(p)
+        final = torch.stack(final)
+        return final
+        
+    def forward(self,x):
+    
+        assert x.size()[2] * x.size()[3] // self.numPatches != 0
+        return self.__patching(x)
+        
+        
+
+
+class BackBoneBlock(BaseModel):
+    def __init__(self,):
+        super().__init__()
+    
+    def forward(self, x):
+        pass
+
+    
+class ClassifierCell(BaseModel):
+    def __init__(self,):
+        super().__init__()
+    
+    def forward(self, x):
+        pass
+
 class MLP4(BaseModel):
     def __init__(self,numInputs, numOutputs):
         super().__init__()
@@ -32,8 +71,12 @@ class MLP4(BaseModel):
         self.fc4 = nn.Sequential(
             nn.Linear(250,numOutputs),
         )
+        self.testing = STEM(14)
     def forward(self, x):
-        x = x.view(-1, self.numInputs)
+        # x = x.view(-1, self.numInputs)
+        x = self.testing(x)
+        # TODO : size consistency here is a key :)
+        print(x.size())
         x = self.fc1(x)
         x = self.fc2(x)
         x = self.fc3(x)
