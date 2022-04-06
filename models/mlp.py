@@ -93,15 +93,19 @@ class MLP4(BaseModel):
     
     
 class MLPCustom(BaseModel):
-    def __init__(self,numLinearLayers:int = 4,dimensions:list = [], dropouts:list = [], activations:list = []):
+    def __init__(self,numLinearLayers:int = 4,dimensions:list = [], dropouts:list = [], activations:list = [], patching:bool = False):
         super().__init__()
         assert len(dropouts) == len(activations) == len(dimensions) == numLinearLayers
         self.numInputs = dimensions[0][0]
         self.Odict = OrderedDict()
+        self.doPatch = patching
+        
         for i in range(numLinearLayers):
             
             if i!=0 and dimensions[i][0]!=dimensions[i-1][1]:
                 raise "Dimensions are not compatible!"
+            if i==0 and self.doPatch:
+                self.Odict["Stem"+str(i)] = STEM(14)
             self.Odict['linear'+str(i)] = nn.Linear(dimensions[i][0],dimensions[i][1])
             if activations[i] == 'Leakyrelu':
                 active = nn.LeakyReLU()
