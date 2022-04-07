@@ -34,10 +34,11 @@ net = mlp.MLPCustom(activations=["Leakyrelu","Leakyrelu","Leakyrelu","Leakyrelu"
 loss = nn.CrossEntropyLoss()
 lr = 0.1
 weightDecay = 0
-optimizer = SGD(net.parameters(), lr =lr, weight_decay=weightDecay)
+momentum = 0.9
+optimizer = SGD(net.parameters(), lr =lr, weight_decay=weightDecay, momentum = momentum)
 net.apply(Normal)
 print(net)
-# this model did 87.51 on test dataset
+# this model did 88.87 on test dataset
 #///////////////////////////////
 
 #////////////////// block three ///////////////////
