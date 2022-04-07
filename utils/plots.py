@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import numpy as np
-
+from torchsummary import summary
 def plotLoss(loss:list = [], label:str = "Loss", ax = None, show:bool = True):
     '''
         A method for plotting the Loss while training,
@@ -48,6 +48,7 @@ def plotAcc(TrainAcc:list = [],TestAcc:list = [], ax = None, show:bool = True):
         plt.show()
     return ax
 
-    
+def Prettysummary(model, dims):
+    summary(model,dims)
     
     
