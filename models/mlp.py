@@ -4,6 +4,9 @@ from torch import nn
 
 
 class BaseModel(nn.Module):
+    '''
+        This is the Parent model for every model created here The reason is to lose the pytorch signature passing
+    '''
     def __init__(self):
         super(BaseModel,self).__init__()
     
@@ -11,7 +14,14 @@ class BaseModel(nn.Module):
         pass
 
 class STEM(BaseModel):
-    def __init__(self, numPixelsTopatch, img_height:int = 28, img_width:int = 28, batch_size:int = 32):
+    def __init__(self, numPixelsTopatch, img_height:int = 28, img_width:int = 28):
+        '''
+            The STEM Layer for the assigned model
+            @params:
+                numPixelsTopatch: the window size for patches
+                img_height:int = 28 : height of the original input image
+                img_width:int = 28 : width of the original input image
+        '''
         super().__init__()
         self.numPixelsTopatch = numPixelsTopatch
         self.finalLinear = nn.Linear((img_height*img_width)//((img_height//numPixelsTopatch) * (img_width//numPixelsTopatch)),784)
@@ -31,7 +41,6 @@ class STEM(BaseModel):
         assert x.size()[2] * x.size()[3] // self.numPixelsTopatch != 0
         x = self.__patching(x)
         x = self.finalLinear(x)
-        # out = torch.transpose(x,1,2)
         return x
         
         
@@ -54,6 +63,13 @@ class ClassifierCell(BaseModel):
 
 class MLP4(BaseModel):
     def __init__(self,numInputs, numOutputs, patching:bool = True):
+        '''
+            The 4 Layer MLP
+            @params:
+                numInputs: the size of the input, the number of hidden units to process them in the first Linear layer
+                numOutputs: the number of expected outputs, the number of classes
+                patching: to patch or not
+        '''
         super().__init__()
         self.numInputs = numInputs
         self.doPatch = patching
@@ -91,6 +107,9 @@ class MLP4(BaseModel):
         return x
     
 class MeanLayer(BaseModel):
+    '''
+        A pytoch style layer just to get the mean of the patches
+    '''
     def __init__(self,):
         super().__init__()
     
@@ -100,6 +119,15 @@ class MeanLayer(BaseModel):
     
 class MLPCustom(BaseModel):
     def __init__(self,numLinearLayers:int = 4,dimensions:list = [], dropouts:list = [], activations:list = [], patching:bool = False):
+        '''
+            A model that can be used as a customizer for MLPs.
+            @params:
+                numLinearLayers:int = 4, number of Linear layers expected to be in the model architecture
+                dimensions:list = [], the hidden units in each linear layer, Dimensions must match
+                dropouts:list = [], dropout rate on each Linear model
+                activations:list = [], activation functions after each layer
+                patching:bool = False, do patching or not
+        '''
         super().__init__()
         assert len(dropouts) == len(activations) == len(dimensions) == numLinearLayers
         self.numInputs = dimensions[0][0]

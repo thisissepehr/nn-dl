@@ -20,6 +20,8 @@ class Train:
 
         
     def __call__(self, trainLoader:torch.utils.data.DataLoader, testLoader:torch.utils.data.DataLoader, network:nn.Module, lossFunction:torch.nn, optimizer:torch.optim):
+        print("notice: training on "+ str(self.device)+"!")
+        network.to(self.device)
         for epoch in range(self.max_epochs):
             self.loss_epoch = 0
             for i, data in tqdm(enumerate(trainLoader, 0), ascii=True):
@@ -28,9 +30,6 @@ class Train:
                 inputs, labels = inputs.to(self.device), labels.to(self.device)
                 optimizer.zero_grad()
                 outputs = network(inputs)
-                # print(outputs, outputs.size())
-                # print("/////////")
-                # print(labels, labels.size())
                 losses = lossFunction(outputs, labels)
                 losses.backward()
                 optimizer.step()

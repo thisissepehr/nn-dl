@@ -1,12 +1,11 @@
-from collections import OrderedDict
-from turtle import forward
-from grpc import insecure_channel
-import torch
-from torch import nn, softmax
+from torch import nn
 from models.mlp import BaseModel
 
 class CNN_A(BaseModel):   
     def __init__(self):
+        '''
+            A CNN architecture with not so many feature maps and batch normalization and maxpooling
+        '''
         super().__init__()
 
         self.cnn_layers = nn.Sequential(
@@ -35,23 +34,23 @@ class CNN_A(BaseModel):
     
 class CNN_B(BaseModel):
     def __init__(self):
+        '''
+            A CNN with only on convolutional and two linear layers and using maxpooling
+        '''
+        
         super().__init__()
         self.conv_Sequence = nn.Sequential(
             nn.Conv2d(1,32,kernel_size=(3,3), padding=(1,0)),
             nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size=2)
-            
-            
+            nn.MaxPool2d(kernel_size=2)    
         )
         self.Linears = nn.Sequential(
             nn.Linear(5824 ,100),
             nn.ReLU(inplace=True),
             nn.Linear(100,10),
-            nn.Softmax()
-            
+            nn.Softmax()   
         )
-        
-        
+           
     def forward(self, x):
         x = self.conv_Sequence(x)
         x = x = x.view(x.size(0), -1)
@@ -61,12 +60,14 @@ class CNN_B(BaseModel):
     
 class CNN_C(BaseModel):
     def __init__(self):
+        '''
+            A more sophisticated CNN with two convolutional layers with maxpooling and three linears with dropouts 
+        '''
         super().__init__()
         self.conv_Sequence = nn.Sequential(
             nn.Conv2d(1,32,kernel_size=(3,3), padding=(1,0)),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2),
-            
             
             nn.Conv2d(32, 4, kernel_size=3, stride=1, padding=1),
             nn.BatchNorm2d(4),
@@ -84,18 +85,19 @@ class CNN_C(BaseModel):
             nn.Linear(150,10),
             
         )
-        
-        
+            
     def forward(self, x):
         x = self.conv_Sequence(x)
         x = x = x.view(x.size(0), -1)
         x = self.Linears(x)
-        
         return x
     
     
 class VGG11(BaseModel):
     def __init__(self, in_channels, num_classes=10):
+        '''
+            an implementation of VGG11 but it still needs work to be functional!
+        '''
         super().__init__()
         self.in_channels = in_channels
         self.num_classes = num_classes

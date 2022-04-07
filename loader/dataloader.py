@@ -38,6 +38,6 @@ class FashionMNISTdataHandler:
                 shuffle: whether to shuffle or not
                 NumWorkers: How many Threads to split the process into
         '''
-        self.trainLoader = DataLoader(self.train_set , batch_size = batchSize, shuffle = shuffle)#, num_workers = NumWorkers)
-        self.testLoader = DataLoader(self.test_set , batch_size = batchSize, shuffle = shuffle)#, num_workers = NumWorkers) 
+        self.trainLoader = DataLoader(self.train_set , batch_size = batchSize, shuffle = shuffle)
+        self.testLoader = DataLoader(self.test_set , batch_size = batchSize, shuffle = shuffle) 
         return self.trainLoader,self.testLoader
