@@ -3,11 +3,7 @@ import torch
 def Normal(m):
     if type(m) == torch.nn.Linear: # by checking type we can init different layers in different ways
         torch.nn.init.normal_(m.weight, std=0.01)
-        torch.nn.init.zeros_(m.bias)
-    # elif type(m) == torch.nn.Conv2d:
-    #     torch.nn.init.normal_(m.weight, std=0.01)
-        
-# TODO : implement HE_uniform initialization      
+        torch.nn.init.zeros_(m.bias)    
 def Xavier(m):
     if isinstance(m, torch.nn.Linear):
         torch.nn.init.xavier_normal_(m.weight)

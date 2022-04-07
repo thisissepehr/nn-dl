@@ -5,7 +5,15 @@ from torch.optim import Adam,SGD,Adagrad
 from utils.evaluate import evaluate
 
 class Train:
-    def __init__(self,num_epochs:int = 20, device: torch.device = None, showPlots:bool = True,showLog:bool = True ):
+    def __init__(self,num_epochs:int = 20, device: torch.device = None, showPlots:bool = True, showLog:bool = True ):
+        '''
+            Trainer Class with some config parameters
+            @params:
+                num_epochs:int = 20 : number of epochs that training continues
+                device: torch.device = None : device to run on if it is defined previously
+                showPlots:bool = True : to show the plots or not
+                showLog:bool = True : to print the log while training or not
+        '''
         self.max_epochs = num_epochs
         self.loss_epoch = 0
         self.train_accuracy = []
@@ -20,6 +28,16 @@ class Train:
 
         
     def __call__(self, trainLoader:torch.utils.data.DataLoader, testLoader:torch.utils.data.DataLoader, network:nn.Module, lossFunction:torch.nn, optimizer:torch.optim):
+        '''
+            The caller method of trainer.
+            @params: 
+                trainLoader:torch.utils.data.DataLoader : the training set data loader
+                testLoader:torch.utils.data.DataLoader : the test set data loader
+                network:nn.Module : the network module that has the architecture
+                lossFunction:torch.nn : the corresponding loss function
+                optimizer:torch.optim : the optimization algorithm to be used in training process
+        '''
+        
         print("notice: training on "+ str(self.device)+"!")
         network.to(self.device)
         for epoch in range(self.max_epochs):
