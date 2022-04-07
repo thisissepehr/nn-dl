@@ -26,18 +26,18 @@ trainLoader, testLoader = FashionMNISTdataHandler("./FashionMNIST")(batchSize=32
 
 
 #///////////// block two //////////////
-net = mlp.MLPCustom(activations=["Leakyrelu","Leakyrelu","Leakyrelu","Leakyrelu","Leakyrelu"],
-                    dimensions=[(784,900),(900,500),(500,450),(450,250),(250,10)],
-                    numLinearLayers=5,
-                    dropouts=[0.3,0.3,0.3,0.3,0.3],
-                    patching=False)
-loss = nn.CrossEntropyLoss()
-lr = 0.1
-weightDecay = 0
-momentum = 0.9
-optimizer = SGD(net.parameters(), lr =lr, weight_decay=weightDecay, momentum = momentum)
-net.apply(Normal)
-print(net)
+# net = mlp.MLPCustom(activations=["Leakyrelu","Leakyrelu","Leakyrelu","Leakyrelu","Leakyrelu"],
+#                     dimensions=[(784,900),(900,500),(500,450),(450,250),(250,10)],
+#                     numLinearLayers=5,
+#                     dropouts=[0.3,0.3,0.3,0.3,0.3],
+#                     patching=False)
+# loss = nn.CrossEntropyLoss()
+# lr = 0.1
+# weightDecay = 0
+# momentum = 0.9
+# optimizer = SGD(net.parameters(), lr =lr, weight_decay=weightDecay, momentum = momentum)
+# net.apply(Normal)
+# print(net)
 # this model did 88.87 on test dataset
 #///////////////////////////////
 
@@ -78,16 +78,17 @@ print(net)
 #//////////////////////////////////////////////////
 
 #////////////////// block six   ////////////////////
-# batchsize = 32
-# convArch = ((1, 64), (1, 128), (2, 256), (2, 512), (2, 512))
-# net = convolutionalModels.VGG11(in_channels=1, num_classes=10)
-# lr = 0.015
-# wd=0.9
-# momentum = 0.9
-# optimizer = Adam(net.parameters(), lr = lr)#, momentum= momentum)
-# loss = nn.CrossEntropyLoss()
-# net.apply(custom_init)
-# print(net)
+batchsize = 32
+convArch = ((1, 64), (1, 128), (2, 256), (2, 512), (2, 512))
+net = convolutionalModels.VGG11(in_channels=1, num_classes=10)
+lr = 0.015
+wd=0.9
+momentum = 0.9
+optimizer = Adam(net.parameters(), lr = lr)#, momentum= momentum)
+loss = nn.CrossEntropyLoss()
+net.apply(custom_init)
+print(net)
+# this architecture doesnt work on my laptop :(
 # this reached ? on test
 #//////////////////////////////////////////////////
 
